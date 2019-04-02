@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Schema = require('./db');
 
 const ArticleSchema = new Schema({

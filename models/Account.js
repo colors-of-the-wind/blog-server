@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Schema = require('./db');
 
 const AccountSchema = new Schema({
@@ -9,6 +10,10 @@ const AccountSchema = new Schema({
 	freeze: {type: Number, required: true},
     // 身份权限 => 0: 管理员 1: vip 2: 访客
     role: {type: Number, required: true},
+    // 创建时间
+    createTime: {type: Date, required: true},
+    // 修改时间
+    modifyTime: {type: Date},
     // 头像
     avatar: {type: String}
 });

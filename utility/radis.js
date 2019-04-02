@@ -1,10 +1,15 @@
 const redis = require('redis');
-const config = require('../config');
+const config = require('../config.json');
+const LogModel = require('../models/Log').LogModel;
+
+const { setLog } = require('../proxy/logger');
+
 const redisEnable = config.redis.enable;
 const defaultExpired = config.defaultExpired;
+let client = null;
 
 if (redisEnable) {
-    const client = redis.createClient(config.redis.port || 6379, config.redis.host || 'localhost');
+    client = redis.createClient(config.redis.port || 6379, config.redis.host || 'localhost');
 
     client.on('error', function (err) {
         console.error('Redis连接错误: ' + err);
@@ -18,14 +23,21 @@ if (redisEnable) {
  * @param value 缓存value
  * @param expired 缓存的有效时长，单位秒
  */
-exports.setItem = (key, value, expired = defaultExpired) => new Promise((resolve, reject) => {
-    if (!redisEnable) return resolve();
+exports.setItem = (key, value, callback, type='json', expired = defaultExpired) => new Promise((resolve, reject) => {
+    if (!redisEnable) return callback(null);
 
-    client.set(key, JSON.stringify(value), function (err) {
-        if (err) return reject(err);
+    let newValue = value;
+    if (type='json') newValue = JSON.stringify(value);
+
+    client.set(key, newValue, (err) => {
+        if (err) {
+            setLog(err);
+            return callback(err);
+        }
+
         if (expired) client.expire(key, expired);
 
-        return resolve();
+        return callback(null);
     });
 })
 
@@ -34,13 +46,20 @@ exports.setItem = (key, value, expired = defaultExpired) => new Promise((resolve
  * 获取缓存
  * @param key 缓存key
  */
-exports.getItem = key => new Promise((resolve, reject) => {
-    if (!redisEnable) return resolve();
+exports.getItem = (key, callback, type='json') => {
+    if (!redisEnable) return callback(null, null);
 
     client.get(key, function (err, reply) {
-        if (err) return reject(err);
+        if (err) {
+            setLog(err);
+            return callback(err);
+        }
 
-        return resolve(JSON.parse(reply));
+        let newValue = value;
+
+        if (type='json') newValue = JSON.stringify(value);
+        
+        return callback(null, newValue);
     });
 }
 
@@ -49,14 +68,15 @@ exports.getItem = key => new Promise((resolve, reject) => {
  * 移除缓存
  * @param key 缓存key
  */
-exports.removeItem = key => new Promise((resolve, reject) => {
-    if (!redisEnable) return resolve();
+exports.removeItem = (key, callback) => {
+    if (!redisEnable) return callback(null);
 
     client.del(key, function (err) {
         if (err) {
-            return reject(err);
+            setLog(err);
+            return callback(err);
         }
         
-        return resolve();
+        return callback(null);
     });
 }

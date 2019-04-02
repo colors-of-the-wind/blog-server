@@ -1,0 +1,7 @@
+{
+	"SuccessCode": 0,
+	"MongoErrCode": {
+		"find": 1,
+		"write": 2
+	}
+}

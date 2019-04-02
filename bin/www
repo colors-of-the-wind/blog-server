@@ -10,7 +10,7 @@ const fs = require('fs');
 const debug = require('debug')('log-collection-server:server');
 
 const app = require('../app');
-const logger = require('../utility/logger');
+const { setLog } = require('../proxy/logger');
 const ssl = require('../config/server.json').ssl;
 
 /**
@@ -96,14 +96,14 @@ if (ssl.enable) {
           cert: certificate
       }, app);
   } catch (err) {
-      logger.error('未能成功读取SSL私钥或证书文件！Error:', err);
+      setLog(err, 3);
       process.exit(1);
   }
 } else {
   /**
    * Create HTTP server.
    */
-  const server = http.createServer(app);
+  server = http.createServer(app);
 }
 
 
@@ -115,7 +115,7 @@ if (ssl.enable) {
 
 
 server.listen(port, () => {
-    logger.info('blog listening on port', port);
+    console.log('blog listening on port', port);
 });
 server.on('error', onError);
 server.on('listening', onListening);
