@@ -1,0 +1,13 @@
+{
+	"ssl": {
+		"enable": false,
+		"key": "../ssl/private.key",
+		"cert": "../ssl/public.key"
+	},
+	"mongoUrl": "mongodb://127.0.0.1/blog",
+	"redis": {
+		"enable": false,
+		"host": "127.0.0.1",
+		"port": 6379
+	}
+}

@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const ejs = require('ejs');
 
-const routers = require('./routes/index');
+const api = require('./routes/index');
 
 const app = express();
 
@@ -19,9 +19,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'build/static')));
+app.use(express.static(path.join(__dirname, 'images')));
 
-// Routing control section
-routers(app);
+// 渲染首页
+app.get('/', (req, res) => res.render('index'));
+
+// 指定api路径
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

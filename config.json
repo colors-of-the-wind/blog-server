@@ -1,0 +1,21 @@
+{
+	"ssl1": {
+		"enable": false,
+		"key": "../certificate/private.key",
+		"cert": "../certificate/certificate.pem"
+	},
+	"mongo": {
+		"url": "mongodb://127.0.0.1/blog",
+		"username": "123",
+		"password": "234"
+	},
+	"redis": {
+		"enable": true,
+		"host": "127.0.0.1",
+		"port": 6379,
+		"defaultExpired": "300"
+	},
+	"log": {
+		"storage": false
+	}
+}
