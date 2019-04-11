@@ -6,12 +6,13 @@ const { isEmail, isPwd } = require('../../utils/validation');
 const { toSaltMd5, defaultPwd } = require('../../utils/secret');
 const { getUser, addUser, setToken } = require('../../proxy/user');
 
+const { getBlogInfo } = require('../../proxy/basic');
+
 // 普通用户注册接口
 router.post('/register', (req, res) => {
 	const { username, password } = req.body;
 
 	getUser({username}).then((user) => {
-
 		try {
 			if (user) throw '用户已存在';
 

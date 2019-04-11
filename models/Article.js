@@ -22,8 +22,6 @@ const ArticleSchema = new Schema({
 	top: {type: Number, required: true},
 	// 访问量
 	views: {type: Number, required: true},
-	// 评论
-	comments: {type: Array, required: true},
 	// 点赞数
 	like: {type: Number, required: true},
 	// 出处 => 0: 原创 1: 转载

@@ -9,12 +9,13 @@ const { getUser } = require('./user');
  * 查询标签
  * @param  {Object} parame 需要查询的条件，默认查询所有标签
  * @param  {Boolean} multiple 是否查找多个（如果是多个则返回数组， 单个返回对象）默认返回单个
+ * @param  {Object} filter 设置需要过滤的属性 1为显示 0为隐藏
  * @return {Promise}
  */
-exports.getLabel = (parame, multiple = false) => new Promise((resolve, reject) => {
-	const find = ({}).toString.call(parame) === '[object Object]' ? multiple ? 'findOne' : 'find' : 'findById';
+exports.getLabel = (parame, multiple = false, filter={}) => new Promise((resolve, reject) => {
+	const find = ({}).toString.call(parame) === '[object Object]' ? multiple ? 'find' : 'findOne' : 'findById';
 
-	LabelModel[find](parame, (err, labels) => {
+	LabelModel[find](parame, filter, (err, labels) => {
 		if (err) {
 			setLog(err);
 			return reject(err, '查询标签失败');

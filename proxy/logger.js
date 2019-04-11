@@ -1,8 +1,6 @@
 const LogModel = require('../models/Log');
-const biggestWrite = require('../config/settings.json').biggestWrite;
 const storage = require('../config.json').log.storage;
 
-let writeCount = 0;
 
 /**
  * 获取所有日志
@@ -74,16 +72,5 @@ exports.setLog = (meta, specie = 0, level = 1) => new Promise((resolve, reject) 
         specie: species[specie]
     });
 
-    errorLog.save(err => {
-        if (err) {
-            
-            if (writeCount >= biggestWrite) return reject(err);
-
-            writeCount++;
-            setLog(meta, level);
-        };
-
-        writeCount = 0;
-        return resolve();
-    });
+    errorLog.save();
 });

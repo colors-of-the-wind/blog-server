@@ -27,7 +27,7 @@ exports.setItem = (key, value, callback, type='json', expired = defaultExpired) 
     if (!redisEnable) return callback(null);
 
     let newValue = value;
-    if (type='json') newValue = JSON.stringify(value);
+    if (type === 'json') newValue = JSON.stringify(value);
 
     client.set(key, newValue, (err) => {
         if (err) {
@@ -55,9 +55,11 @@ exports.getItem = (key, callback, type='json') => {
             return callback(err);
         }
 
-        let newValue = value;
+        let newValue = reply;
 
-        if (type='json') newValue = JSON.stringify(value);
+        if (type === 'json') newValue = JSON.parse(reply);
+
+        console.log('dangqian', type === 'json', newValue, typeof newValue, reply)
         
         return callback(null, newValue);
     });
