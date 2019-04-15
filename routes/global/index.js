@@ -8,7 +8,7 @@ const { getUser, addUser, setToken } = require('../../proxy/user');
 
 const { getBlogInfo } = require('../../proxy/basic');
 
-// 普通用户注册接口
+// 博客基本信息
 router.get('/blogInfo', (req, res) => {
 	getBlogInfo().then((data) => {
 		success(res, data);
