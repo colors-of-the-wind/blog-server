@@ -18,7 +18,7 @@ exports.getSpecies = (parame, multiple = false, filter={}) => new Promise((resol
 	SpeciesModel[find](parame, filter, (err, species) => {
 		if (err) {
 			setLog(err);
-			return reject(err, '查询分类失败');
+			return reject({err, msg: '查询分类失败'});
 		}
 
 		resolve(species);
@@ -40,13 +40,13 @@ exports.addSpecies = (user, parame={}) => new Promise((resolve, reject) => {
 		newSpecies.save((err, data) => {
 	        if (err) {
 	            setLog(err);
-	            return reject(err, '添加分类失败');
+	            return reject({err, msg: '添加分类失败'});
 	        }
 
 	        resolve(null);
 	    })
 	}).catch((err, msg) => {
-		reject(err, '未找到创建分类用户');
+		reject({err, msg: '未找到创建分类用户'});
 	});
 });
 
@@ -57,26 +57,27 @@ exports.addSpecies = (user, parame={}) => new Promise((resolve, reject) => {
  * @param  {Object} parame 修改分类信息
  * @return {Promise}
  */
-exports.updateSpecies = (_id, parame={}) => new Promise((resolve, reject) => {
+const updateSpecies = (_id, parame={}) => new Promise((resolve, reject) => {
 	
 	getLabel(_id).then(species => {
  
-		if (!species) return reject(species, '未找到匹配分类');
+		if (!species) return reject({err, msg: '未找到匹配分类'});
 
 		SpeciesModel.update({_id}, parame, (err, data) => {
 	        if (err) {
 	            setLog(err);
-	            return reject(err, '添加分类失败');
+	            return reject({err, msg: '添加分类失败'});
 	        }
 
 	        resolve(null);
 	    })
 
 	}).catch(err => {
-		reject(err, '查询分类失败');
+		reject({err, msg: '查询分类失败'});
 	});
 });
 
+exports.updateSpecies = updateSpecies;
 
 /**
  * 删除分类

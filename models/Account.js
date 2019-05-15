@@ -11,9 +11,9 @@ const AccountSchema = new Schema({
     // 身份权限 => 0: 管理员 1: vip 2: 访客
     role: {type: Number, required: true},
     // 创建时间
-    createTime: {type: Date, required: true},
+    createTime: {type: Number, required: true},
     // 修改时间
-    modifyTime: {type: Date},
+    modifyTime: {type: Number},
     // 头像
     avatar: {type: String}
 });

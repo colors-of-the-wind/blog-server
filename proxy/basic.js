@@ -12,7 +12,7 @@ exports.getBlogInfo = () => new Promise((resolve, reject) => {
     getItem('blogInfo', (err, data) => {
         if (err) {
             setLog(err, 1);
-            return reject(err, '读取失败');
+            return reject({err, msg: '读取失败'});
         }
 
         if (data) return resolve(data);
@@ -20,7 +20,7 @@ exports.getBlogInfo = () => new Promise((resolve, reject) => {
         fs.readFile(path.resolve(__dirname, '../config/settings.json'), (err, buffer) => {
             if (err) {
                 setLog(err, 3);
-                return reject(err, '读取文件失败');
+                return reject({err, msg: '读取文件失败'});
             }
 
             const bufStr = buffer.toString();

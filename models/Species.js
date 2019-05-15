@@ -5,7 +5,7 @@ const SpeciesSchema = new Schema({
     // 分类名
     speciesName: {type: String, required: true},
     // 创建时间
-	createTime: {type: Date, required: true},
+	createTime: {type: Number, required: true},
 	// 是否删除 => 0: 未删除 1: 已删除
 	delete: {type: Number, required: true},
 	// 创建者id

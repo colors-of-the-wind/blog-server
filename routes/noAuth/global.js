@@ -12,7 +12,7 @@ const { getBlogInfo } = require('../../proxy/basic');
 router.get('/blogInfo', (req, res) => {
 	getBlogInfo().then((data) => {
 		success(res, data);
-	}).catch((err, msg) => {
+	}).catch(({err, msg}) => {
 		error(res, err);
 	});
 });

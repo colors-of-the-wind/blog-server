@@ -6,35 +6,50 @@ const { getUser } = require('./user');
 
 
 /**
+ * 获取文章数
+ * @param params 参数对象
+ */
+exports.getCount = params => new Promise((resolve, reject) =>{
+    ArticleSchema.countDocuments(params, (err, count) => {
+        if (err) {
+			setLog(err);
+			return reject({err, msg: '查询文章条数失败'});
+		}
+        
+        return resolve(count);
+    });
+});
+
+/**
  * 查询文章
  * @param  {Object} parame 需要查询的条件，默认查询所有文章
  * @param  {Boolean} multiple 是否查找多个（如果是多个则返回数组， 单个返回对象）默认返回单个
  * @param  {Object} filter 设置需要过滤的属性 1为显示 0为隐藏
  * @return {Promise}
  */
-exports.getArticle = (parame, multiple = false, filter={}) => new Promise((resolve, reject) => {
+const getArticle = (parame, multiple = false, filter={}, sort=null) => new Promise((resolve, reject) => {
 	const find = ({}).toString.call(parame) === '[object Object]' ? multiple ? 'find' : 'findOne' : 'findById';
 
 	ArticleSchema[find](parame, filter, (err, article) => {
 		if (err) {
 			setLog(err);
-			return reject(err, '查询文章失败');
+			return reject({err, msg: '查询文章失败'});
 		}
 
 		resolve(article);
 	});
 });
 
+exports.getArticle = getArticle;
 
 /**
- * 添加文章(未完成)
+ * 添加文章
  * @param  {ObjectID} user 创建文章用户信息
  * @param  {Object} parame 文章信息
  * @return {Promise}
  */
-exports.addArticle = (user, parame={}) => new Promise((resolve, reject) => {
-	
-	getUser(user).then(user => {
+exports.addArticle = (userId, parame={}) => new Promise((resolve, reject) => {
+	getUser(userId).then(user => {
 		let newArticle = new ArticleSchema({
 			...parame,
 			user_id: user._id,
@@ -45,18 +60,17 @@ exports.addArticle = (user, parame={}) => new Promise((resolve, reject) => {
 			views: 0,
 			like: 0
 		});
-		
+
 		newArticle.save((err, data) => {
 	        if (err) {
 	            setLog(err);
-	            return reject(err, '添加文章失败');
+	            return reject({err, msg: '添加文章失败'});
 	        }
 
 	        resolve(null);
-	    })
-	}).catch((err, msg) => {
-		reject(err, '未找到创建文章用户');
-	});
+	    });
+	})
+	.catch((err, msg) => reject({err, msg: '未找到创建文章用户'}));
 });
 
 
@@ -66,26 +80,26 @@ exports.addArticle = (user, parame={}) => new Promise((resolve, reject) => {
  * @param  {Object} parame 修改文章信息
  * @return {Promise}
  */
-exports.updateArticle = (_id, parame={}) => new Promise((resolve, reject) => {
+const updateArticle = (_id, parame={}) => new Promise((resolve, reject) => {
 	
 	getArticle(_id).then(article => {
  
-		if (!article) return reject(article, '未找到匹配文章');
+		if (!article) return reject({err, msg: '未找到匹配文章'});
 
 		ArticleSchema.update({_id}, parame, (err, data) => {
 	        if (err) {
 	            setLog(err);
-	            return reject(err, '更新文章失败');
+	            return reject({err, msg: '更新文章失败'});
 	        }
 
 	        resolve(null);
-	    })
-
+	    });
 	}).catch(err => {
-		reject(err, '查询文章失败');
+		reject({err, msg: '查询文章失败'});
 	});
 });
 
+exports.updateArticle = updateArticle;
 
 /**
  * 置顶文章

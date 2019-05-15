@@ -28,16 +28,16 @@ router.post('/register', (req, res) => {
 			...req.body,
 			freeze: 0,
 			role: 2,
-			createTime: new Date(),
-			modifyTime: new Date(),
+			createTime: Date.now(),
+			modifyTime: Date.now(),
 			avatar: ''
 		}).then(() => {
 			success(res);
 		})
-		.catch((err, msg) => {
+		.catch(({err, msg}) => {
 			error(res, err);
 		});
-	}).catch((err, msg) => {
+	}).catch(({err, msg}) => {
 		error(res, err);
 	});
 });
@@ -70,11 +70,11 @@ router.post('/login', (req, res) => {
 			if (user.password === defaultPwd) retult.isFirst = true;
 
 			success(res, retult);
-		}).catch((err, msg) => {
+		}).catch(({err, msg}) => {
 			error(res, err);
 		});
 	})
-	.catch((err, msg) => {
+	.catch(({err, msg}) => {
 		error(res, err);
 	});
 })

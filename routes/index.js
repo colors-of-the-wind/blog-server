@@ -4,12 +4,12 @@ const router = express.Router();
 const { getToken } = require('../proxy/user');
 const { auth } = require('../utils/result');
 
-const users = require('./users');
-const globals = require('./global');
+const authRouters = require('./auth');
+const noAuthRouters = require('./noAuth');
 
 
-router.use('/global', globals);
-router.use('/user', users);
+router.use('/', noAuthRouters);
+
 
 // 放置不需要鉴权的路由
 
@@ -20,7 +20,7 @@ router.use('/', (req, res, next) => {
 
 	getToken(token).then((user) => {
 		// 鉴权成功
-		res.userInfo = user;
+		req.userInfo = user;
 		next();
 	})
 	.catch(() => {
@@ -31,5 +31,6 @@ router.use('/', (req, res, next) => {
 
 // 放置需要鉴权的路由
 
+router.use('/', authRouters);
 
 module.exports = router;

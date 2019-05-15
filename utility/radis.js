@@ -59,8 +59,6 @@ exports.getItem = (key, callback, type='json') => {
 
         if (type === 'json') newValue = JSON.parse(reply);
 
-        console.log('dangqian', type === 'json', newValue, typeof newValue, reply)
-        
         return callback(null, newValue);
     });
 }

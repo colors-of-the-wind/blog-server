@@ -9,6 +9,7 @@ const api = require('./routes/index');
 
 const app = express();
 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'build'));
 app.engine('html', ejs.__express);
@@ -21,22 +22,28 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'build/static')));
 app.use(express.static(path.join(__dirname, 'images')));
 
+
 // 渲染首页
 app.get('/', (req, res) => res.render('index'));
 
+
 // 指定api路径
 app.use('/api', api);
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
 });
 
+
 // error handler
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  console.error(err)
 
   // render the error page
   res.status(err.status || 500);

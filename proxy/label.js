@@ -1,8 +1,8 @@
 const LabelModel = require('../models/Label');
 
 const { setLog } = require('./logger');
-const { getItem, setItem } = require('../utility/radis');
 const { getUser } = require('./user');
+const { getItem, setItem } = require('../utility/radis');
 
 
 /**
@@ -10,21 +10,23 @@ const { getUser } = require('./user');
  * @param  {Object} parame 需要查询的条件，默认查询所有标签
  * @param  {Boolean} multiple 是否查找多个（如果是多个则返回数组， 单个返回对象）默认返回单个
  * @param  {Object} filter 设置需要过滤的属性 1为显示 0为隐藏
+ * @param  {Object} sort 设置排序方式
  * @return {Promise}
  */
-exports.getLabel = (parame, multiple = false, filter={}) => new Promise((resolve, reject) => {
+const getLabel = (parame={}, multiple=false, filter=null, sort=null) => new Promise((resolve, reject) => {
 	const find = ({}).toString.call(parame) === '[object Object]' ? multiple ? 'find' : 'findOne' : 'findById';
 
-	LabelModel[find](parame, filter, (err, labels) => {
+	LabelModel[find](parame, filter, sort, (err, labels) => {
 		if (err) {
 			setLog(err);
-			return reject(err, '查询标签失败');
+			return reject({err, msg: '查询标签失败'});
 		}
 
 		resolve(labels);
-	});
+	})
 });
 
+exports.getLabel = getLabel;
 
 /**
  * 添加标签
@@ -32,21 +34,24 @@ exports.getLabel = (parame, multiple = false, filter={}) => new Promise((resolve
  * @param  {Object} parame 标签信息
  * @return {Promise}
  */
-exports.addLabel = (user, parame={}) => new Promise((resolve, reject) => {
+exports.addLabel = (userId, parame={}) => new Promise((resolve, reject) => {
 	
-	getUser(user).then(user => {
-		let newLabel = new LabelModel({...parame, user_id: user._id, createTime: new Date(), delete: 0});
+	getUser(userId).then(user => {
+		if (!user) return reject({err: user, msg: '未找到匹配用户'});
+
+		let newLabel = new LabelModel({...parame, user_id: user._id, createTime: Date.now(), delete: 0});
 		
 		newLabel.save((err, data) => {
 	        if (err) {
 	            setLog(err);
-	            return reject(err, '添加标签失败');
+	            return reject({err, msg: '添加标签失败'});
 	        }
 
 	        resolve(null);
 	    })
 	}).catch((err, msg) => {
-		reject(err, '未找到创建标签用户');
+		setLog(err);
+		reject({err, msg: '未找到创建标签用户'});
 	});
 });
 
@@ -57,25 +62,29 @@ exports.addLabel = (user, parame={}) => new Promise((resolve, reject) => {
  * @param  {Object} parame 修改标签信息
  * @return {Promise}
  */
-exports.updateLabel = (_id, parame={}) => new Promise((resolve, reject) => {
+const updateLabel = (_id, parame={}, isDel=false) => new Promise((resolve, reject) => {
 	
 	getLabel(_id).then(label => {
- 
-		if (!label) return reject(label, '未找到匹配标签');
+		
+		if (!label || !isDel && label.delete) return reject({err: label, msg: '未找到匹配标签'});
 
-		LabelModel.update({_id}, parame, (err, data) => {
+		if (isDel && label.delete) return resolve(null);
+
+		LabelModel.updateOne({_id}, parame, err => {
 	        if (err) {
 	            setLog(err);
-	            return reject(err, '添加标签失败');
+	            return reject({err, msg: '添加标签失败'});
 	        }
 
 	        resolve(null);
 	    })
-
 	}).catch(err => {
-		reject(err, '查询标签失败');
+		setLog(err);
+		reject({err, msg: '查询标签失败'});
 	});
 });
+
+exports.updateLabel = updateLabel;
 
 
 /**
@@ -83,4 +92,4 @@ exports.updateLabel = (_id, parame={}) => new Promise((resolve, reject) => {
  * @param  {String} _id  需要删除标签的_id
  * @return {Promise}
  */
-exports.deleteLabel = _id => updateLabel(_id, { delete: 1 });
+exports.deleteLabel = _id => updateLabel(_id, { labelName: 'shenweikang' }, true);

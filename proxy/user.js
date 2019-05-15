@@ -14,19 +14,21 @@ const { toStringId, toObjectId, salt, toSaltMd5 } = require('../utils/secret');
  * @param  {Object} filter 设置需要过滤的属性 1为显示 0为隐藏
  * @return {Promise}
  */
-exports.getUser = (parame, multiple = false, filter={}) => new Promise((resolve, reject) => {
+const getUser = (parame, multiple = false, filter={}) => new Promise((resolve, reject) => {
 
     const find = ({}).toString.call(parame) === '[object Object]' ? multiple ? 'find' : 'findOne' : 'findById';
 
     AccountModel[find](parame, filter, (err, data) => {
         if (err) {
             setLog(err);
-            return reject(err, '查询用户失败');
+            return reject({err, msg: '查询用户失败'});
         }
 
         resolve(data);
     });
 });
+
+exports.getUser = getUser;
 
 /**
  * 添加用户
@@ -40,7 +42,7 @@ exports.addUser = (parame={}) => new Promise((resolve, reject) => {
     newUser.save((err, data) => {
         if (err) {
             setLog(err);
-            return reject(err, '添加失败');
+            return reject({err, msg: '添加失败'});
         }
 
         resolve(null);
@@ -54,23 +56,25 @@ exports.addUser = (parame={}) => new Promise((resolve, reject) => {
  * @param  {Object} parame 需要更新的数据，可以是一个或多个
  * @return {Promise}
  */
-exports.updateUser = (_id, parame={}) => new Promise((resolve, reject) => {
+const updateUser = (_id, parame={}) => new Promise((resolve, reject) => {
 
     getUser(_id).then(user => {
-        if (!user) return reject(user, '未找到匹配用户');
+        if (!user) return reject({err: user, msg: '未找到匹配用户'});
 
         AccountModel.update({_id}, parame, (err, data) => {
             if (err) {
                 setLog(err);
-                return reject(err, '更新失败');
+                return reject({err, msg: '更新失败'});
             }
 
             resolve(null);
         });
     }).catch(err => {
-        reject(err, '查找用户失败');
+        reject({err, msg: '查找用户失败'});
     })
 });
+
+exports.updateUser = updateUser;
 
 
 /**
@@ -97,7 +101,7 @@ exports.setToken = user => new Promise((resolve, reject) => {
         token = jwt.sign({ username, id, freeze, role, avatar }, salt);
     } catch(err) {
         setLog(err, 3);
-        reject(err, 'token签发失败');
+        reject({err, msg: 'token签发失败'});
     }
 
     let key = `token_${id}`;
@@ -105,7 +109,7 @@ exports.setToken = user => new Promise((resolve, reject) => {
     setItem(key, token, (err, data) => {
         if (err) {
             setLog(err, 1);
-            return reject(err, 'token保存失败');
+            return reject({err, msg: 'token保存失败'});
         }
 
         resolve({ key, token });
@@ -123,7 +127,7 @@ exports.getToken = token => new Promise((resolve, reject) => {
     jwt.verify(token, salt, (err, user) => {      
         if (err) {
             setLog(err, 3);
-            return reject(err, '解密失败');
+            return reject({err, msg: '解密失败'});
         }
 
         const _id = toObjectId(user.id);
@@ -133,16 +137,16 @@ exports.getToken = token => new Promise((resolve, reject) => {
         getItem(key, (err, data) => {
             if (err) {
                 setLog(err, 1);
-                return reject(err, 'token查询失败');
+                return reject({err, msg: 'token查询失败'});
             }
 
-            if(!data) return reject(null, '未查到相关token');
+            if(!data) return reject({err: null, msg: '未查到相关token'});
 
-            data._id = toObjectId(data.id);
+            user._id = _id;
 
-            delete data.id;
+            delete user.id;
 
-            resolve(data);
+            resolve(user);
 
         }, 'text');
     });

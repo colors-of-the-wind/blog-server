@@ -11,9 +11,9 @@ const ArticleSchema = new Schema({
 	// 文章内容
 	content: {type: String, required: true},
 	// 创建时间
-	createTime: {type: Date, required: true},
+	createTime: {type: Number, required: true},
 	// 修改时间
-	modifyTime: {type: Date, required: true},
+	modifyTime: {type: Number, required: true},
 	// 存放地 => 0: 发布列表 1: 草稿列表
 	draft: {type: Number, required: true},
 	// 是否删除 => 0: 未删除 1: 已删除
@@ -34,6 +34,6 @@ const ArticleSchema = new Schema({
 	species_id: {type: Schema.Types.ObjectId, required: true}
 });
 
-const ArticleModel = mongoose.model('Article', AccountSchema, 'Article');
+const ArticleModel = mongoose.model('Article', ArticleSchema, 'Article');
 
 module.exports = ArticleModel;

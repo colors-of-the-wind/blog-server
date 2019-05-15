@@ -11,7 +11,7 @@ const CommentSchema = new Schema({
     // 评论者id
     user_id: {type: Schema.Types.ObjectId, required: true},
     // 评论时间
-    createTime: {type: Date, required: true},
+    createTime: {type: Number, required: true},
 });
 
 const CommentSchema = mongoose.model('Comment', CommentSchema, 'Comment');
