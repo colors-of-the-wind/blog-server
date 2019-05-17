@@ -11,8 +11,6 @@ const { getCount, getArticle } = require('../../proxy/article');
 
 // 获取全部标签
 const getList = (req, res, callback) => {
-	let result = [];
-
 	getLabel({delete: 0}, true, {labelName: 1, icon: 1, createTime: 1, _id: 1}, {sort: {labelName: 1}})
 	.then(data => {
 		const options = data.map(item => getCount({label_id: item._id}))

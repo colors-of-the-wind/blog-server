@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Schema = require('./db');
+const Schema = require('../utility/db');
 
 const LogSchema = new Schema({
     // 异常信息

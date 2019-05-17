@@ -1,7 +1,6 @@
 const ArticleSchema = require('../models/Article');
 
 const { setLog } = require('./logger');
-const { getItem, setItem } = require('../utility/radis');
 const { getUser } = require('./user');
 
 

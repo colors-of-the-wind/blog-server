@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const { setLog } = require('./logger');
-const { getItem, setItem } = require('../utility/radis');
+const { getItem, setItem } = require('./redis');
 
 
 /**

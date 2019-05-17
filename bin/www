@@ -33,6 +33,9 @@ const normalizePort = val => {
   return false;
 }
 
+const port = normalizePort(process.env.PORT || '8080');
+let server = null;
+
 /**
  * Event listener for HTTP server "error" event.
  */
@@ -65,20 +68,19 @@ const onError = error => {
  * Event listener for HTTP server "listening" event.
  */
 
-const onListening = () => {
+const onListening = (a) => {
   const addr = server.address();
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+
+  console.log('node启动成功：', `${ssl.enable ? 'https' : 'http' }://${addr.address}:${addr.port}`)
 }
 
 /**
  * Get port from environment and store in Express.
  */
-
-const port = normalizePort(process.env.PORT || '8080');
-let server = null;
 
 app.set('port', port);
 
@@ -114,8 +116,6 @@ if (ssl.enable) {
 
 
 
-server.listen(port, () => {
-    console.log('blog listening on port', port);
-});
+server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

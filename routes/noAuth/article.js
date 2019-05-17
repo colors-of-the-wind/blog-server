@@ -11,8 +11,6 @@ const { getLabel } = require('../../proxy/Label');
 
 // 获取全部标签
 const getList = (req, res, callback) => {
-	let result = [];
-
 	getArticle({delete: 0, top: 0, draft: 0}, true, null, {sort: {modifyTime: 1}})
 	.then(data => {
 		getCount({delete: 0, top: 0, draft: 0})
@@ -49,7 +47,6 @@ const getList = (req, res, callback) => {
 
 // 文章列表
 router.get('/list', (req, res) => {
-	console.log('返回值', req.body)
 	getList(req, res, (result) => success(res, result))
 });
 

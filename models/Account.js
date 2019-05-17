@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Schema = require('./db');
+const Schema = require('../utility/db');
 
 const AccountSchema = new Schema({
     // 用户名

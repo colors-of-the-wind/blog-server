@@ -5,9 +5,11 @@
 		"cert": "../certificate/certificate.pem"
 	},
 	"mongo": {
-		"url": "mongodb://127.0.0.1/blog",
-		"username": "123",
-		"password": "234"
+		"host": "127.0.0.1",
+		"port": 27017,
+		"name": "blog",
+		"username": "112",
+		"password": ""
 	},
 	"redis": {
 		"enable": true,

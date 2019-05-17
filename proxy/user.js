@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const AccountModel = require('../models/Account');
 
 const { setLog } = require('./logger');
-const { getItem, setItem } = require('../utility/radis');
+const { getItem, setItem } = require('./redis');
 const { toStringId, toObjectId, salt, toSaltMd5 } = require('../utils/secret');
 
 

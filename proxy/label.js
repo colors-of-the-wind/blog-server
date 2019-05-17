@@ -2,7 +2,6 @@ const LabelModel = require('../models/Label');
 
 const { setLog } = require('./logger');
 const { getUser } = require('./user');
-const { getItem, setItem } = require('../utility/radis');
 
 
 /**
