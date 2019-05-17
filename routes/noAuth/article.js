@@ -48,7 +48,7 @@ const getList = (req, res, callback) => {
 }
 
 // 文章列表
-router.post('/list', (req, res) => {
+router.get('/list', (req, res) => {
 	console.log('返回值', req.body)
 	getList(req, res, (result) => success(res, result))
 });
