@@ -13,9 +13,11 @@ const AccountSchema = new Schema({
     // 创建时间
     createTime: {type: Number, required: true},
     // 修改时间
-    modifyTime: {type: Number},
+    modifyTime: {type: Number, default: Date.now},
     // 头像
-    avatar: {type: String}
+    avatar: {type: String, default: 'http://img0.imgtn.bdimg.com/it/u=2294562579,3637209517&fm=11&gp=0.jpg'},
+    // 用户昵称
+    nickname: {type: String, default: '匿名'}
 });
 
 const AccountModel = mongoose.model('Account', AccountSchema, 'Account');

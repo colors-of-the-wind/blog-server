@@ -12,25 +12,24 @@ const { getBlogInfo } = require('../../proxy/basic');
 router.post('/register', (req, res) => {
 	const { username, password } = req.body;
 
+	try {
+		if (!isEmail(username)) throw '用户名格式不正确';
+
+		if (!isPwd(password)) throw '密码格式不正确';
+		
+	} catch(msg) {
+		return error(res, null, msg);
+	}
+
 	getUser({username}).then((user) => {
-		try {
-			if (user) throw '用户已存在';
-
-			if (!isEmail(username)) throw '用户名格式不正确';
-
-			if (!isPwd(password)) throw '密码格式不正确';
-			
-		} catch(msg) {
-			return error(res, null, msg);
-		}
+		if (user) return error(res, null, '用户已存在');
 		
 		addUser({
 			...req.body,
 			freeze: 0,
 			role: 2,
 			createTime: Date.now(),
-			modifyTime: Date.now(),
-			avatar: ''
+			modifyTime: Date.now()
 		}).then(() => {
 			success(res);
 		})
